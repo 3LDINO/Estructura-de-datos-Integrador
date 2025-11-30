@@ -1,5 +1,5 @@
 # Estructura-de-datos-Integrador
-Trabajo Práctico Integrador Personajes de Ciencia Ficción y Estructuras de Datos en Python
+Trabajo Práctico Integrador Personajes de Ciencia Ficción y Estructuras de Datos en Python
 
 Creado por: Ariel Dinocco
 
