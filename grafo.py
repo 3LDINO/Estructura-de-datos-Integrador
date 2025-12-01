@@ -9,20 +9,30 @@ class Grafo:
         """
         Inicializa el grafo vacio
         """
-        self.grafo = {}
+        self.adyacencia = {}
 
     def agregar_nodo(self, nodo):
         """
         Agrega un nodo al grafo si no existe
         """
-        if nodo not in self.grafo:
-            self.grafo[nodo] = []
+        if nodo not in self.adyacencia:
+            self.adyacencia[nodo] = []
 
     def agregar_arista(self, origen, destino):
         """
-        Agrega una arista dirigida al grafo
+        Conecta dos nodos existentes
         """
-        self.grafo[origen].append(destino)
+        if origen not in self.adyacencia:
+            self.agregar_nodo(origen)
+
+        if destino not in self.adyacencia:
+            self.agregar_nodo(destino)
+
+        if destino not in self.adyacencia[origen]:
+            self.adyacencia[origen].append(destino)
+
+        if origen not in self.adyacencia[destino]:
+            self.adyacencia[destino].append(origen)
 
     def bfs(self, inicio):
         """
@@ -30,27 +40,41 @@ class Grafo:
 
         Uso de cola con lista
         """
-        visitados = []
+        visitados = set()
         cola = [inicio]
+        resultado = []
+
+        visitados.add(inicio)
 
         while cola:
             actual = cola.pop(0)
-            if actual not in visitados:
-                visitados.append(actual)
-                cola.extend(self.grafo[actual])
-        return visitados
+            resultado.append(actual)
 
-    def dfs(self, inicio, visitados=None):
+            for vecino in self.adyacencia.get(actual, []):
+                if vecino not in visitados:
+                    visitados.add(vecino)
+                    cola.append(vecino)
+
+        return resultado
+
+    def dfs(self, inicio):
         """
-        Recorrido en profundidad DFS
-
-        Implementacion recursiva
+        Recorrido en profundidad
         """
-        if visitados is None:
-            visitados = []
-        visitados.append(inicio)
+        visitados = set()
+        resultado = []
+        self._dfs_rec(inicio, visitados, resultado)
+        return resultado
 
-        for v in self.grafo[inicio]:
-            if v not in visitados:
-                self.dfs(v, visitados)
-        return visitados
+    def _dfs_rec(self, actual, visitados, resultado):
+        """
+        DFS recursivo
+        """
+        if actual in visitados:
+            return
+
+        visitados.add(actual)
+        resultado.append(actual)
+
+        for vecino in self.adyacencia.get(actual, []):
+            self._dfs_rec(vecino, visitados, resultado)
