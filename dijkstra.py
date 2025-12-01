@@ -3,36 +3,36 @@ import heapq
 
 def dijkstra(grafo, inicio):
     """
-    Algoritmo de Dijkstra
-
-    Calcula la distancia minima desde el nodo inicial
+    Algoritmo de camino minimo
     """
 
-    # Diccionario de distancias
-    # Cada nodo inicia con infinito
-    distancias = {n: float("inf") for n in grafo}
+    # diccionario nodo -> distancia minima
+    distancias = {}
 
-    # La distancia al origen es cero
+    for nodo in grafo:
+        distancias[nodo] = float("inf")
+
     distancias[inicio] = 0
 
-    # Cola de prioridad usando heap
+    # heap de prioridad
     cola = [(0, inicio)]
 
     while cola:
-        distancia_actual, nodo = heapq.heappop(cola)
 
-        # Si la distancia es mayor no se procesa
-        if distancia_actual > distancias[nodo]:
+        distancia_actual, actual = heapq.heappop(cola)
+
+        # si existe camino mejor se ignora
+        if distancia_actual > distancias[actual]:
             continue
 
-        # Se recorren los vecinos del nodo actual
-        for vecino, costo in grafo[nodo]:
+        # recorrer vecinos
+        for vecino, costo in grafo.get(actual, []):
+
             nueva = distancia_actual + costo
 
-            # Si se encuentra una mejor ruta se actualiza
+            # mejorar distancia
             if nueva < distancias[vecino]:
                 distancias[vecino] = nueva
                 heapq.heappush(cola, (nueva, vecino))
 
-    # Se devuelve el diccionario de distancias
     return distancias
