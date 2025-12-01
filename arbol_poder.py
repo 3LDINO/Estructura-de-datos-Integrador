@@ -1,7 +1,7 @@
 # clase
 
 
-class NodoArbol:
+class NodoPoder:
     """
     Nodos del Arbol Binario
 
@@ -21,8 +21,14 @@ class NodoArbol:
         FUNCION:
         Crear una unidad basica del árbol
         """
+
+        # personaje almacenado
         self.personaje = personaje
+
+        # hijo izquierdo menor poder
         self.izquierda = None
+
+        # hijo derecho mayor poder
         self.derecha = None
 
 
@@ -43,17 +49,18 @@ class ArbolPoder:
         """
         self.raiz = None
 
-    def insertar(self, personaje):
+    def agregar_personaje(self, personaje):
         """
-        Inserta un personaje en el arbol
-
-        MECANISMO:
-        Llama a una funcion recursiva
-        que encuentra su lugar correcto
+        Inserta personaje segun nivel de poder
         """
-        self.raiz = self._insertar(self.raiz, personaje)
+        nodo = NodoPoder(personaje)
 
-    def _insertar(self, nodo, personaje):
+        if self.raiz is None:
+            self.raiz = nodo
+        else:
+            self._insertar(self.raiz, nodo)
+
+    def _insertar(self, actual, nuevo):
         """
         Inserción recursiva dentro del arbol
 
@@ -68,84 +75,79 @@ class ArbolPoder:
             (es un arbol de busqueda despues de todo)
         """
 
-        # Si llegamos a una hoja vacía
-        if nodo is None:
-            return NodoArbol(personaje)
-
-        # Comparación según poder
-        if personaje.get_poder() < nodo.personaje.get_poder():
-            nodo.izquierda = self._insertar(nodo.izquierda, personaje)
+        if nuevo.personaje.poder < actual.personaje.poder:
+            if actual.izquierda is None:
+                actual.izquierda = nuevo
+            else:
+                self._insertar(actual.izquierda, nuevo)
         else:
-            nodo.derecha = self._insertar(nodo.derecha, personaje)
-        return nodo
+            if actual.derecha is None:
+                actual.derecha = nuevo
+            else:
+                self._insertar(actual.derecha, nuevo)
 
-    def inorden(self, nodo):
+    def buscar_por_poder(self, poder):
         """
-        Recorrido Inorden (izquierda - raiz - derecha)
-
-        RESULTADO:
-        Imprime los personajes ordenados por poder
-
-        FUNCION:
-        Mostrar personajes desde menor a mayor poder
-
-        COMPLEJIDAD:
-        O(n) - visita todos los nodos
+        Busca personaje usando el arbol
         """
-        if nodo:
-            self.inorden(nodo.izquierda)
-            print(f"{nodo.personaje.nombre} - Poder {nodo.personaje.get_poder()}")
-            self.inorden(nodo.derecha)
+        return self._buscar(self.raiz, poder)
 
-    # PREORDEN
-    def preorden(self, nodo):
+    def _buscar(self, actual, poder):
         """
-        Recorrido Preorden (raiz - izquierda - derecha)
+        Busqueda recursiva
         """
-        if nodo:
-            print(nodo.personaje.nombre)
-            self.preorden(nodo.izquierda)
-            self.preorden(nodo.derecha)
-
-    # POSTORDEN
-    def postorden(self, nodo):
-        """
-        Recorrido Postorden (izquierda - derecha - raiz)
-        """
-        if nodo:
-            self.postorden(nodo.izquierda)
-            self.postorden(nodo.derecha)
-            print(nodo.personaje.nombre)
-
-    def buscar(self, nodo, nombre):
-        """
-        Busca un personaje por su nombre
-        """
-        if nodo is None:
-            return None
-        if nodo.personaje.nombre == nombre:
-            return nodo.personaje
-
-        encontrado = self.buscar(nodo.izquierda, nombre)
-        if encontrado:
-            return encontrado
-        return self.buscar(nodo.derecha, nombre)
-
-    def buscar(self, poder, nodo):
-        """
-        Busca un personaje según nivel de poder
-
-        FUNCION:
-        Búsqueda típica de árbol binario
-        """
-
-        if nodo is None:
+        if actual is None:
             return None
 
-        if poder == nodo.personaje.get_poder():
-            return nodo.personaje
+        if actual.personaje.poder == poder:
+            return actual.personaje
 
-        elif poder < nodo.personaje.get_poder():
-            return self.buscar(poder, nodo.izquierda)
+        if poder < actual.personaje.poder:
+            return self._buscar(actual.izquierda, poder)
         else:
-            return self.buscar(poder, nodo.derecha)
+            return self._buscar(actual.derecha, poder)
+
+    def mostrar(self):
+        """
+        Muestra personajes ordenados por poder
+        """
+        self._inorden(self.raiz)
+
+    def _inorden(self, actual):
+        """
+        Recorrido inorden
+        """
+        if actual:
+            self._inorden(actual.izquierda)
+            print(actual.personaje)
+            self._inorden(actual.derecha)
+
+    def preorden(self):
+        """
+        Recorrido preorden
+        """
+        self._preorden(self.raiz)
+
+    def _preorden(self, actual):
+        """
+        Recorrido previo a hijos
+        """
+        if actual:
+            print(actual.personaje)
+            self._preorden(actual.izquierda)
+            self._preorden(actual.derecha)
+
+    def postorden(self):
+        """
+        Recorrido postorden
+        """
+        self._postorden(self.raiz)
+
+    def _postorden(self, actual):
+        """
+        Recorrido posterior a hijos
+        """
+        if actual:
+            self._postorden(actual.izquierda)
+            self._postorden(actual.derecha)
+            print(actual.personaje)
