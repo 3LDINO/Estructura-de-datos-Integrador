@@ -19,13 +19,13 @@ class Mision:
         self.nombre = nombre
         self.prioridad = prioridad
 
-    def __lt__(self, other):
+    def __lt__(self, otra):
         """
         Metodo de comparacion entre misiones
 
         Permite que el heap ordene por prioridad
         """
-        return self.prioridad < other.prioridad
+        return self.prioridad < otra.prioridad
 
 
 class ColaMisiones:
@@ -51,8 +51,14 @@ class ColaMisiones:
 
     def atender(self):
         """
-        Retira la mision con mas prioridad (la que tenga el valor mas bajo)
-
-        Usa heap para obtener el minimo
+        Devuelve mision mas prioritaria
         """
-        return heapq.heappop(self.cola)
+        if self.cola:
+            return heapq.heappop(self.cola)
+        return None
+
+    def esta_vacia(self):
+        """
+        Verifica si existen misiones pendientes
+        """
+        return len(self.cola) == 0
